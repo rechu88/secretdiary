@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="13A603" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="nzF-aw-eje">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="knV-Gl-EM6">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="nzF-aw-eje" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="HCx-ZQ-g8p"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="rt9-h8-VHI">
+                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="fyr-f3-hN7" kind="relationship" relationship="rootViewController" id="Qj4-TM-RSq"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0cN-E9-ObE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-647" y="770"/>
+        </scene>
+        <!--All Notes View Controller - Secret Diary-->
+        <scene sceneID="svO-Hr-BjD">
+            <objects>
+                <viewController id="fyr-f3-hN7" customClass="SDAllNotesViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="tLK-P1-LM3"/>
+                        <viewControllerLayoutGuide type="bottom" id="JVw-E3-LTG"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="aCf-NW-Cnj">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="csE-Q5-udX" customClass="MGScrollView">
+                                <rect key="frame" x="0.0" y="1" width="320" height="503"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="JVw-E3-LTG" firstAttribute="top" secondItem="csE-Q5-udX" secondAttribute="bottom" id="9Sc-cK-Wca"/>
+                            <constraint firstAttribute="trailing" secondItem="csE-Q5-udX" secondAttribute="trailing" id="QSL-eJ-La2"/>
+                            <constraint firstItem="csE-Q5-udX" firstAttribute="centerY" secondItem="aCf-NW-Cnj" secondAttribute="centerY" id="QUI-0B-4zB"/>
+                            <constraint firstItem="csE-Q5-udX" firstAttribute="leading" secondItem="aCf-NW-Cnj" secondAttribute="leading" id="YfN-Wf-Eas"/>
+                        </constraints>
+                    </view>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="Secret Diary" id="dyB-4V-p6a">
+                        <barButtonItem key="leftBarButtonItem" image="burger.png" id="yEL-tF-hna">
+                            <connections>
+                                <action selector="menuBtnClicked:" destination="fyr-f3-hN7" id="dEJ-BR-b7Y"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="add.png" id="G1b-JG-cx2">
+                            <connections>
+                                <segue destination="aKr-NW-8gr" kind="push" id="jTV-9g-lQD"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="diaryEntries" destination="csE-Q5-udX" id="11h-TF-CQX"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DJd-TI-hxI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-148" y="756"/>
+        </scene>
+        <!--Add Notes View Controller-->
+        <scene sceneID="iFR-hi-OJ8">
+            <objects>
+                <viewController id="aKr-NW-8gr" customClass="SDAddNotesViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="z8e-Zz-lOB"/>
+                        <viewControllerLayoutGuide type="bottom" id="Ttv-kh-wis"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="lae-mY-zuF">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hTC-eb-XGK" customClass="NoteView">
+                                <rect key="frame" x="2" y="114" width="316" height="454"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bcO-m9-PEw" userLabel="AddImage">
+                                <rect key="frame" x="8" y="76" width="32" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="add_photo.png">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="addPhotos:" destination="aKr-NW-8gr" eventType="touchUpInside" id="el9-LR-bBc"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Py-cx-rcO" userLabel="CancelEntry">
+                                <rect key="frame" x="282" y="76" width="32" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="cancel_notes.png">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="cancelEntry:" destination="aKr-NW-8gr" eventType="touchUpInside" id="1XQ-bn-3bs"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" alpha="0.20000000000000001" tag="10" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3HS-24-Swl" userLabel="MakeBold">
+                                <rect key="frame" x="66" y="76" width="32" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="bold.png"/>
+                                <connections>
+                                    <action selector="toggleForType:" destination="aKr-NW-8gr" eventType="touchUpInside" id="FXi-rY-2d3"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" alpha="0.20000000000000001" tag="20" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gmX-Kf-dy0">
+                                <rect key="frame" x="106" y="76" width="32" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="italic.png">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="toggleForType:" destination="aKr-NW-8gr" eventType="touchUpInside" id="tuI-A4-1VD"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CYe-XH-ovp">
+                                <rect key="frame" x="248" y="76" width="32" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="save_notes.png">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="addDataToStorage:" destination="aKr-NW-8gr" eventType="touchUpInside" id="kRM-d0-QZs"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="0Py-cx-rcO" secondAttribute="trailing" constant="6" id="1s1-Fx-lqe"/>
+                            <constraint firstAttribute="trailing" secondItem="hTC-eb-XGK" secondAttribute="trailing" constant="2" id="24g-L1-2ss"/>
+                            <constraint firstItem="bcO-m9-PEw" firstAttribute="top" secondItem="z8e-Zz-lOB" secondAttribute="bottom" constant="12" id="2VL-n1-uz9"/>
+                            <constraint firstItem="0Py-cx-rcO" firstAttribute="leading" secondItem="CYe-XH-ovp" secondAttribute="trailing" constant="2" id="9rd-X6-L3u"/>
+                            <constraint firstItem="gmX-Kf-dy0" firstAttribute="leading" secondItem="3HS-24-Swl" secondAttribute="trailing" constant="8" id="C9V-8j-MXz"/>
+                            <constraint firstItem="3HS-24-Swl" firstAttribute="leading" secondItem="bcO-m9-PEw" secondAttribute="trailing" constant="26" id="D8E-rf-uzQ"/>
+                            <constraint firstItem="CYe-XH-ovp" firstAttribute="top" secondItem="z8e-Zz-lOB" secondAttribute="bottom" constant="12" id="HOd-O4-CSc"/>
+                            <constraint firstItem="3HS-24-Swl" firstAttribute="top" secondItem="z8e-Zz-lOB" secondAttribute="bottom" constant="12" id="VFx-xY-Euv"/>
+                            <constraint firstItem="0Py-cx-rcO" firstAttribute="top" secondItem="z8e-Zz-lOB" secondAttribute="bottom" constant="12" id="Zed-Ro-3Vd"/>
+                            <constraint firstItem="hTC-eb-XGK" firstAttribute="top" secondItem="z8e-Zz-lOB" secondAttribute="bottom" constant="50" id="bXx-pN-ivh"/>
+                            <constraint firstItem="gmX-Kf-dy0" firstAttribute="top" secondItem="z8e-Zz-lOB" secondAttribute="bottom" constant="12" id="cIU-Hr-42w"/>
+                            <constraint firstItem="Ttv-kh-wis" firstAttribute="top" secondItem="hTC-eb-XGK" secondAttribute="bottom" id="jAf-fu-mEH"/>
+                            <constraint firstItem="hTC-eb-XGK" firstAttribute="leading" secondItem="lae-mY-zuF" secondAttribute="leading" constant="2" id="nkY-vD-LnS"/>
+                            <constraint firstItem="bcO-m9-PEw" firstAttribute="leading" secondItem="lae-mY-zuF" secondAttribute="leading" constant="8" id="sTf-x9-Tpe"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="n4Z-oy-Lge"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <connections>
+                        <outlet property="noteView" destination="hTC-eb-XGK" id="32R-OL-TjE"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KoX-8m-zhs" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="382" y="756"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="add.png" width="32" height="32"/>
+        <image name="add_photo.png" width="32" height="32"/>
+        <image name="bold.png" width="32" height="32"/>
+        <image name="burger.png" width="19" height="17"/>
+        <image name="cancel_notes.png" width="32" height="32"/>
+        <image name="italic.png" width="32" height="32"/>
+        <image name="save_notes.png" width="32" height="32"/>
+    </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
+</document>
