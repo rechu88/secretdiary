@@ -18,11 +18,9 @@
 
 @interface SDAddNotesViewController ()
 {
-//    UIImagePickerController *imagePickerController;
-    UIImage *selectedImage;
     BOOL boldSet, italicsSet, underlineSet;
     UIImageView *imageView;
-    NSMutableArray *exclusions;
+    NSMutableArray *exclusions, *addedImages;
     UIFont *regularFont, *boldFont, *italicsFont, *boldItalicFont;
     
     // To store start of image pans
@@ -56,6 +54,7 @@
     italicsFont = [UIFont fontWithName:@"Lato-LightItalic" size:19];
     boldItalicFont = [UIFont fontWithName:@"Lato-BoldItalic" size:19];
     
+    addedImages = [[NSMutableArray alloc] init];
     
     _noteView.font = regularFont;
     _noteView.delegate = self;
@@ -74,8 +73,6 @@
 -(IBAction)addDataToStorage:(id)sender
 {
     PFObject *newPost = [PFObject objectWithClassName:@"Entries"];
-    NSData *imageData = UIImageJPEGRepresentation(selectedImage, 1.0);
-    PFFile *imageFile = [PFFile fileWithName:@"Image.jpg" data:imageData];
     
     // Set text content
     NSData* notes = [NSKeyedArchiver archivedDataWithRootObject:_noteView.attributedText];
@@ -85,7 +82,6 @@
 
     [newPost setObject:notes forKey:@"notes"];
     [newPost setObject:[NSDate date] forKey:@"date"];
-    [newPost setObject:imageFile forKey:@"images"];
 
     // Relation with User
     [newPost setObject:[PFUser currentUser] forKey:@"author"];
@@ -94,6 +90,27 @@
     [newPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
         if (!error) {
             // Dismiss the NewPostViewController and show the BlogTableViewController
+            [self.navigationController popViewControllerAnimated:YES];
+            
+            for (int i=0; i < [addedImages count]; ++i) {
+                UIImageView *imView = [addedImages objectAtIndex:i];
+                PFObject *attachedImage = [PFObject objectWithClassName:@"Images"];
+                NSData *imageData = UIImageJPEGRepresentation(imView.image, 1.0);
+                PFFile *imageFile = [PFFile fileWithName:@"Image.jpg" data:imageData];
+                
+                [attachedImage setObject:imageFile forKey:@"image"];
+                [attachedImage setObject:newPost forKey:@"entry"];
+                
+                [attachedImage saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    if (error) {
+                        [[[UIAlertView alloc] initWithTitle:@"Error Saving Image"
+                                                    message:error.description
+                                                   delegate:nil
+                                          cancelButtonTitle:@"ok"
+                                          otherButtonTitles:nil] show];
+                    }
+                }];
+            }
             return;
         
         } else {
@@ -108,7 +125,6 @@
 
 -(IBAction)cancelEntry:(id)sender
 {
-    NSLog(@"%@", _noteView.attributedText);
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -218,7 +234,7 @@
 {
     // Picking Image from Camera/ Library
     [picker dismissViewControllerAnimated:YES completion:^{}];
-    selectedImage = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+    UIImage *selectedImage = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
     
     if (!selectedImage)
     {
@@ -258,6 +274,10 @@
     
     [exclusions addObject:imagePath];
     _noteView.textContainer.exclusionPaths = exclusions;
+    
+    // Add Imageview to the Mutable array to store
+    [addedImages addObject:imageView];
+    
     [_noteView addSubview:imageView];
     
 }
