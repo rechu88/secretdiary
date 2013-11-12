@@ -20,10 +20,14 @@
 {
 //    UIImagePickerController *imagePickerController;
     UIImage *selectedImage;
-    
     BOOL boldSet, italicsSet, underlineSet;
-    
+    UIImageView *imageView;
+    NSMutableArray *exclusions;
     UIFont *regularFont, *boldFont, *italicsFont, *boldItalicFont;
+    
+    // To store start of image pans
+    CGFloat firstX;
+    CGFloat firstY;
 }
 
 @end
@@ -54,7 +58,6 @@
     
     
     _noteView.font = regularFont;
-//    _noteView.text = @"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
     _noteView.delegate = self;
 }
 
@@ -71,6 +74,8 @@
 -(IBAction)addDataToStorage:(id)sender
 {
     PFObject *newPost = [PFObject objectWithClassName:@"Entries"];
+    NSData *imageData = UIImageJPEGRepresentation(selectedImage, 1.0);
+    PFFile *imageFile = [PFFile fileWithName:@"Image.jpg" data:imageData];
     
     // Set text content
     NSData* notes = [NSKeyedArchiver archivedDataWithRootObject:_noteView.attributedText];
@@ -80,6 +85,7 @@
 
     [newPost setObject:notes forKey:@"notes"];
     [newPost setObject:[NSDate date] forKey:@"date"];
+    [newPost setObject:imageFile forKey:@"images"];
 
     // Relation with User
     [newPost setObject:[PFUser currentUser] forKey:@"author"];
@@ -226,20 +232,108 @@
                                          scale:selectedImage.scale
                                    orientation:selectedImage.imageOrientation];
     selectedImage = fixed;
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:selectedImage];
+    imageView = [[UIImageView alloc] initWithImage:selectedImage];
     
     CGPoint cursorPosition = [_noteView caretRectForPosition:_noteView.selectedTextRange.start].origin;
     
-    
     UIBezierPath *imagePath = [UIBezierPath bezierPathWithRect:CGRectMake(cursorPosition.x, cursorPosition.y, EMBED_IMAGE_WIDTH, EMBED_IMAGE_HEIGHT)];
     [imageView setFrame:CGRectMake(cursorPosition.x, cursorPosition.y, EMBED_IMAGE_WIDTH, EMBED_IMAGE_HEIGHT)];
+    // Set the tag to the index to add
+    imageView.tag = [exclusions count];
     
-    NSMutableArray *exclusions = [NSMutableArray arrayWithArray:_noteView.textContainer.exclusionPaths];
+    imageView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(imageTapped:)];
+    tapGesture.numberOfTapsRequired = 2;
+    imageView.userInteractionEnabled = YES;
+    [imageView addGestureRecognizer:tapGesture];
+    
+    // creat and configure the pan gesture
+    UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureDetected:)];
+    [panGestureRecognizer setDelegate:self];
+    
+    // Adding the pan gesture capture
+    [imageView addGestureRecognizer:panGestureRecognizer];
+    
+    exclusions = [NSMutableArray arrayWithArray:_noteView.textContainer.exclusionPaths];
     
     [exclusions addObject:imagePath];
     _noteView.textContainer.exclusionPaths = exclusions;
     [_noteView addSubview:imageView];
     
+}
+
+- (void)imageTapped:(UITapGestureRecognizer *)recognizer
+{
+    UIImageView *movingImage = (UIImageView*)recognizer.view;
+    
+    [movingImage removeFromSuperview];
+    
+    if ([exclusions count] >= movingImage.tag) {
+        [exclusions removeObjectAtIndex:movingImage.tag];
+        _noteView.textContainer.exclusionPaths = exclusions;
+    }
+}
+
+- (void)panGestureDetected:(UIPanGestureRecognizer *)recognizer
+{
+    UIGestureRecognizerState state = [recognizer state];
+    
+    CGPoint translatedPoint = [recognizer translationInView:self.view];
+    
+    if(state == UIGestureRecognizerStateBegan) {
+        
+        firstX = [[recognizer view] center].x;
+        firstY = [[recognizer view] center].y;
+    }
+    translatedPoint = CGPointMake(firstX+translatedPoint.x, firstY+translatedPoint.y);
+    
+    [[recognizer view] setCenter:translatedPoint];
+    
+    if(state == UIGestureRecognizerStateEnded) {
+        
+        UIImageView *movingImage = (UIImageView*)recognizer.view;
+        
+        CGFloat finalX = translatedPoint.x;
+        CGFloat finalY = translatedPoint.y;
+        
+        if(UIDeviceOrientationIsPortrait([[UIDevice currentDevice] orientation])) {
+            
+            if(finalX < 0) {
+                finalX = 0;
+            } else if(finalX > 768) {
+                finalX = 768;
+            }
+            
+            if(finalY < 0) {
+                finalY = 0;
+            }   else if(finalY > 1024) {
+                finalY = 1024;
+            }
+        } else {
+            if(finalX < 0) {
+                finalX = 0;
+            } else if(finalX > 1024) {
+                finalX = 768;
+            }
+            
+            if(finalY < 0) {
+                finalY = 0;
+            } else if(finalY > 768) {
+                finalY = 1024;
+            }
+        }
+        
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationDuration:.35];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+        [movingImage setCenter:CGPointMake(finalX, finalY)];
+        [UIView commitAnimations];
+
+        UIBezierPath *imagePath = [UIBezierPath bezierPathWithRect:CGRectMake(finalX - EMBED_IMAGE_WIDTH/2, finalY - EMBED_IMAGE_HEIGHT/2, EMBED_IMAGE_WIDTH, EMBED_IMAGE_HEIGHT)];
+
+        [exclusions setObject:imagePath atIndexedSubscript:movingImage.tag];
+        _noteView.textContainer.exclusionPaths = exclusions;
+    }
 }
 
 @end

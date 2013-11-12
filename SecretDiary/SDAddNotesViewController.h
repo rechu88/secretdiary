@@ -10,7 +10,7 @@
 #import <Parse/Parse.h>
 #import "NoteView.h"
 
-@interface SDAddNotesViewController : UIViewController <UITextViewDelegate, UIImagePickerControllerDelegate , UINavigationControllerDelegate, UIScrollViewDelegate,UIActionSheetDelegate>
+@interface SDAddNotesViewController : UIViewController <UITextViewDelegate, UIImagePickerControllerDelegate , UINavigationControllerDelegate, UIScrollViewDelegate,UIActionSheetDelegate,UIGestureRecognizerDelegate>
 
 @property (strong, nonatomic) IBOutlet NoteView *noteView;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *addPhotos;

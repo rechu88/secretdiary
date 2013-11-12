@@ -73,6 +73,19 @@
 	// Do any additional setup after loading the view.
     self.optionIndices = [NSMutableIndexSet indexSetWithIndex:1];
     
+    // Create a query
+    PFQuery *postQuery = [PFQuery queryWithClassName:@"Entries"];
+    
+    // Follow relationship
+    [postQuery whereKey:@"author" equalTo:[PFUser currentUser]];
+    
+    [postQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            NSArray * objects = objects;
+        }
+    }];
+
+    
     // iPhone or iPad?
     UIDevice *device = UIDevice.currentDevice;
     phone = device.userInterfaceIdiom == UIUserInterfaceIdiomPhone;
